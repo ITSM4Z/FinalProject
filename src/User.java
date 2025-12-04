@@ -8,14 +8,12 @@ public abstract class User {
     protected String name;
     protected String email;
     protected UserRole userRole;
-    public static int usersCount;
 
     public User(int userId, String name, String email, UserRole userRole) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.userRole = userRole;
-        usersCount++;
     }
 
     public int getUserId() {

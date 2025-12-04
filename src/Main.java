@@ -8,10 +8,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        //Fix the search not showing the instructor
-        //Fix the Sort methods not showing and telling what they are actually sorting
-        //Fix the second search reverting to the first search when entering 0
-        User currentUser = null;
+        //Fix the search algorithm
+        //Add a welcome message
+
+        User currentUser;
         Platform platform = new Platform();
         List<User> userList = platform.getUsers();
 
@@ -41,6 +41,7 @@ public class Main {
 
                     currentUser = admins.get(option-1);
                     try{
+                        System.out.println("\n------------ Welcome " + currentUser.getName() + " ------------");
                         currentUser.displayDashboard(platform);
                     } catch (UserNotFoundException e){
                         System.out.println(e.getMessage());
@@ -60,6 +61,7 @@ public class Main {
 
                     currentUser = instructors.get(option-1);
                     try{
+                        System.out.println("\n------------ Welcome " + currentUser.getName() + " ------------");
                         currentUser.displayDashboard(platform);
                     } catch (UserNotFoundException e){
                         System.out.println(e.getMessage());
@@ -79,13 +81,14 @@ public class Main {
 
                     currentUser = students.get(option-1);
                     try{
+                        System.out.println("\n------------ Welcome " + currentUser.getName() + " ------------");
                         currentUser.displayDashboard(platform);
                     } catch (UserNotFoundException e){
                         System.out.println(e.getMessage());
                     }
                     break;
                 default:
-                    System.out.println("Error");
+                    System.out.println("Error: An unexpected error occurred while choosing a role in the Main");
                     break;
             }
         }

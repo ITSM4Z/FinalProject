@@ -101,7 +101,7 @@ public class SystemHelper {
 
             if(users.isEmpty()) return null;
 
-            String role = "";
+            String role;
             switch (userRole){
                 case STUDENT:
                     role = "student";
@@ -157,18 +157,22 @@ public class SystemHelper {
                         }
 
                         System.out.println("Search results: ");
+                        int resultsCount = 0;
                         for (int i = 0; i < 10; i++) {
-
                             try{
                                 System.out.println((i+1) + ". " + nameResults.get(i));
+                                resultsCount++;
+                                if(nameResults.get(i) == nameResults.getLast())
+                                    break;
                             } catch (IndexOutOfBoundsException indexE){
                                 break;
                             }
                         }
+                        System.out.println(resultsCount);
 
                         int option = choice.ChoiceByInt(10, true);
                         if(option == 0){
-                            break;
+                            return null;
                         }
                         else if(option == -1){
                             continue;
@@ -225,18 +229,19 @@ public class SystemHelper {
                         }
 
                         System.out.println("Search results: ");
+                        int resultsCount = 0;
                         for (int i = 0; i < 10; i++) {
-
                             try{
                                 System.out.println((i+1) + ". " + nameResults.get(i));
+                                resultsCount++;
                             } catch (IndexOutOfBoundsException indexE){
                                 break;
                             }
                         }
 
-                        int option = choice.ChoiceByInt(10, true);
+                        int option = choice.ChoiceByInt(resultsCount, true);
                         if(option == 0){
-                            break;
+                            return null;
                         }
                         else if(option == -1){
                             continue;

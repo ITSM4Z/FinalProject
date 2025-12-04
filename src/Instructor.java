@@ -43,7 +43,7 @@ public class Instructor extends User implements Cloneable{
     }
 
     @Override
-    public void displayDashboard(Platform platform) throws UserNotFoundException {
+    public void displayDashboard(Platform platform) {
         Scanner sc = new Scanner(System.in);
         SystemHelper.Choice choice;
 
@@ -72,8 +72,7 @@ public class Instructor extends User implements Cloneable{
         }
     }
 
-    private void createCourse(Platform platform){ //Fixes: Course not added to the teachingCourses list when created,
-        // when price, id, capacity is skipped an error appears
+    private void createCourse(Platform platform){
         int courseId = 9999;
         int courseCapacity = 0;
         double coursePrice = 0.0;
@@ -112,7 +111,7 @@ public class Instructor extends User implements Cloneable{
                 courseTitle = sc.nextLine().trim();
 
                 if(courseTitle.isEmpty()){
-                    courseTitle = "NewCourse" + Course.courseCount + 1;
+                    courseTitle = "NewCourse" + (platform.getCourses().size() + 1);
                     System.out.println("Skipped title input: Generated default title (" + courseTitle + ").");
                     break;
                 }
@@ -167,6 +166,7 @@ public class Instructor extends User implements Cloneable{
                 String userInput = sc.nextLine().trim();
 
                 if(userInput.isEmpty()){
+                    courseCapacity = 15;
                     System.out.println("Skipped capacity input: Default capacity is set (" + 15 + ").");
                     break;
                 }
@@ -282,7 +282,7 @@ public class Instructor extends User implements Cloneable{
 
         Course course = teachingCourses.get(option - 1);
 
-        System.out.println("Managing (" + course.getTitle() + ")");
+        System.out.println("Managing (" + course+ ")");
         System.out.println("1. View Enrolled Students \n2. Search For Enrolled Student");
         option = choice.ChoiceByInt(2, false);
 

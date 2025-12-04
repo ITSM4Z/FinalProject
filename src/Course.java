@@ -3,6 +3,8 @@
  * @author Meshal
  */
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,9 +22,7 @@ public class Course implements Enrollable, Rateable, Cloneable, Comparable<Cours
     private ArrayList<Double> ratings;
     private ArrayList<Student> enrolledStudents;
 
-    public static int courseCount;
-
-    public Course() { courseCount++; }
+    public Course() {}
     public Course(int courseID, int capacity, String title, double price, CourseLevel courseLevel) {
         this.courseID = courseID;
         this.capacity = capacity;
@@ -32,7 +32,6 @@ public class Course implements Enrollable, Rateable, Cloneable, Comparable<Cours
         this.modules = new ArrayList<>();
         this.ratings = new ArrayList<>();
         this.enrolledStudents = new ArrayList<>();
-        courseCount++;
     }
     public int getCourseID() {
         return courseID;
@@ -138,14 +137,16 @@ public class Course implements Enrollable, Rateable, Cloneable, Comparable<Cours
             throw new CourseFullException("Sorry, this course is full!");
         }
         enrolledStudents.add(s);
-        System.out.println("Student: " + s.getName() + "Successfully added!");
+        Enrollment enrollmentReceipt = new Enrollment(s, LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        enrollmentReceipt.printReceipt();
+        System.out.println("Student: " + s.getName() + " was Successfully added!");
         return true;
     }
     @Override
     public boolean drop(Student s) throws UserNotFoundException { //new
         if (enrolledStudents.contains(s)) {
             enrolledStudents.remove(s);
-            System.out.println("Student: " + s.getName() + "  was successfully removed.");
+            System.out.println("Student: " + s.getName() + " was successfully removed.");
             return true;
         } else if (!enrolledStudents.contains(s)) {
             throw new UserNotFoundException("Error: The student is not on the registered list.");

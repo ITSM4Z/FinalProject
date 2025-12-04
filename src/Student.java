@@ -7,12 +7,14 @@ import java.util.*;
 
 public class Student extends User implements Cloneable, Comparable<Student>{
     private ArrayList<Course> enrolledCourses;
+    private HashMap<Course, Double> ratedCourses;
     private HashMap<Course, Double> grades;
 
     public Student(int userId, String name, String email, UserRole userRole) {
         super(userId, name, email, userRole);
         enrolledCourses = new ArrayList<>();
         grades = new HashMap<>();
+        ratedCourses = new HashMap<>();
     }
 
     public void setEnrolledCourses(ArrayList<Course> courses){
@@ -102,8 +104,8 @@ public class Student extends User implements Cloneable, Comparable<Student>{
     public void displayDashboard(Platform platform) {
         while (true){
             System.out.println("------ Student Dashboard ------");
-            System.out.println("1. View Enrolled Courses \n2. Enroll in New Course \n3. Drop Course \n4. View Grades & GPA" +
-                    "\n5. Rate Course");
+            System.out.println("1. View Enrolled Courses \n2. Enroll in New Course" +
+                    " \n3. Drop Course \n4. View Grades & GPA");
             Scanner sc = new Scanner(System.in);
 
             SystemHelper.Choice choice = new SystemHelper.Choice("Choose an option (Press 0 to go back): ");
@@ -205,7 +207,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                 boolean enrolled = selectedCourse.enroll(this);
                 if(enrolled){
                     addCourseEnrollment(selectedCourse);
-                    System.out.println("Successfully enrolled in " + selectedCourse.getTitle());
+                    System.out.println("Successfully enrolled in: " + selectedCourse.getTitle());
                 }
                 break;
             } catch (AlreadyEnrolledException | CourseFullException e){
@@ -228,6 +230,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                 return;
             }
 
+            System.out.println("Enrolled courses:");
             for (int i = 0; i < enrolledCourses.size(); i++) {
                 System.out.println((i+1) + ". " + enrolledCourses.get(i));
             }
@@ -239,7 +242,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
 
             while (true){
                 System.out.println();
-                System.out.println(course);
+                System.out.println("Viewing: " + course);
                 System.out.println("1. View Grades \n2. Rate the course");
                 choice = new SystemHelper.Choice("Choose an option (Enter 0 to go back): ");
                 option = choice.ChoiceByInt(2, false);
@@ -259,15 +262,21 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                     break;
                 }
                 else if(option == 2){
-                    System.out.println("Enter rating (1-5): ");
-                    double rating = sc.nextDouble();
+                    if(ratedCourses.get(course) != null){
+                        double rating = ratedCourses.get(course);
+                        System.out.println("You already gave this course a rating(" + rating + ").");
+                        break;
+                    }
+                    System.out.print("Enter rating (1-5): ");
+                    double ratingInput = sc.nextDouble();
 
-                    if(rating < 1 || rating > 5){
+                    if(ratingInput < 1 || ratingInput > 5){
                         System.out.println("Error: Rating must be 1-5.");
                         break;
                     }
-                    course.addRating(rating);
-                    System.out.printf("Rated %.1f | New course average rating: %.1f \n", rating, course.getAverageRating());
+                    course.addRating(ratingInput);
+                    ratedCourses.put(course, ratingInput);
+                    System.out.printf("Rated %.1f | New course average rating: %.1f \n", ratingInput, course.getAverageRating());
                     break;
                 }
             }

@@ -60,6 +60,7 @@ public class Admin extends User implements Cloneable{
                         System.out.println("Error: No users found.");
                         break;
                     }
+                    System.out.println("Currently there's " + platform.getUsers().size() + " users in the system: ");
                     for(User user : users){
                         System.out.println(user);
                     }
@@ -70,6 +71,7 @@ public class Admin extends User implements Cloneable{
                         System.out.println("Error: No courses found.");
                         break;
                     }
+                    System.out.println("Currently there's " + platform.getCourses().size() + " courses in the system: ");
                     for(Course course : courses){
                         System.out.println(course);
                     }
@@ -83,7 +85,7 @@ public class Admin extends User implements Cloneable{
                         if(user == null) break;
 
                         if(platform.removeUser(user)){
-                            System.out.println(user.name + " removed successfully.");
+                            System.out.println(user + " is removed successfully.");
                         }
                         else{
                             System.out.println("CRITICAL: An Unexpected error happened while removing: " + user.name);
@@ -94,15 +96,17 @@ public class Admin extends User implements Cloneable{
                     }
                     break;
                 case 5:
+                    System.out.println("Students sorted by GPA:");
                     List<Student> sortedUsers = platform.getStudentsSortedByGPA();
                     for(Student student : sortedUsers){
-                        System.out.println(student);
+                        System.out.println(student + " GPA: " + student.calculateGPA());
                     }
                     break;
                 case 6:
+                    System.out.println("Courses sorted by difficulty:");
                     List<Course> sortedCourses = platform.getCoursesSortedByDifficulty();
                     for(Course course : sortedCourses){
-                        System.out.println(course);
+                        System.out.println(course + " Difficulty: " + course.getCourseLevel());
                     }
                     break;
                 default:
@@ -110,7 +114,7 @@ public class Admin extends User implements Cloneable{
             }
         }
     }
-    private void createUser(){ //Fixes: Id not looping when entered wrong, whole creation not looping when skipping, User created even when an error happens
+    private void createUser(){
         int userId = 9999;
         String userName = "";
         String email = "";
@@ -148,7 +152,7 @@ public class Admin extends User implements Cloneable{
                 userName = sc.nextLine().trim();
 
                 if(userName.isEmpty()){
-                    userName = "NewUser" + User.usersCount++;
+                    userName = "NewUser" + (platform.getUsers().size() + 1);
                     System.out.println("Skipped name input: Generated default name (" + userName + ").");
                     break;
                 }
@@ -158,7 +162,6 @@ public class Admin extends User implements Cloneable{
                 }
                 else{
                     System.out.println("Error: The name of the user must not be numbers.");
-                    continue;
                 }
             } catch (NumberFormatException numberE){
                 break;
@@ -204,6 +207,7 @@ public class Admin extends User implements Cloneable{
                 email = sc.nextLine().trim();
 
                 if(email.isEmpty()){
+                    email = "none";
                     System.out.println("Skipped email input: No email provided.");
                     break;
                 }
