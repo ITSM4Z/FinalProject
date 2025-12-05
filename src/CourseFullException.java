@@ -1,11 +1,9 @@
 /**
- * @author Rayan
- */
-
-/**
  * a custom checked Exception to use when the course is full.
  * Extending Exception to use the try-catch.
  * usage is when someone tries to enroll but the course is full.
+ *
+ * @author Rayan
  */
 public class CourseFullException extends Exception {
     // default message
