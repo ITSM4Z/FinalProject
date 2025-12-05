@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  *
@@ -36,11 +35,6 @@ public class Platform {
             SystemHelper.Search searcher = new SystemHelper.Search("Enter a user's Name or Id (Enter 0 to go back): ",
                     "Error: You must enter a user's Name or Id.",
                     "Error: You must enter a valid positive Id.");
-            SystemHelper.Choice choice = new SystemHelper.Choice("Choose a user or enter another user's name to search again" +
-                    " (Enter 0 to go back): ",
-                    "Error: You must choose a user.",
-                    "Error: You must enter a positive number.",
-                    "Error: You must enter a valid user choice.");
 
             List<User> users = new ArrayList<>(getUsers());
             if(users.isEmpty()){
@@ -48,7 +42,7 @@ public class Platform {
                 return null;
             }
 
-            return searcher.searchForUser(users, choice);
+            return searcher.searchForUser(users);
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException();
         }
@@ -85,6 +79,7 @@ public class Platform {
 
     public List<User> getUsers() { return Collections.unmodifiableList(users);}
     public List<Course> getCourses() { return Collections.unmodifiableList(courses);}
+
     public List<Student> getStudentsSortedByGPA(){
         ArrayList<Student> tempStudentList = new ArrayList<>();
         for(User user : users){

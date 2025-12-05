@@ -17,6 +17,7 @@ public class Admin extends User implements Cloneable{
     public String toString() {
         return String.format("Admin: %s", super.toString());
     }
+
     @Override
     public Admin clone() throws CloneNotSupportedException {
         return (Admin) super.clone();
@@ -46,10 +47,11 @@ public class Admin extends User implements Cloneable{
             System.out.println();
             System.out.println("------ Admin Dashboard ------");
             System.out.println("1. View All Users \n2. View All Courses \n3. Add New User \n4. Remove User" +
-                    "\n5. View Students Sorted by GPA \n6. View Courses Sorted by Difficulty");
+                    "\n5. View Students Sorted by GPA \n6. View Courses Sorted by Difficulty" +
+                    "\n7. Demo Generic Catalogue");
 
             choice = new SystemHelper.Choice("Choose an option (Enter 0 to go back): ");
-            option = choice.ChoiceByInt(6, false);
+            option = choice.ChoiceByInt(7);
 
             switch (option){
                 case 0: return;
@@ -67,7 +69,7 @@ public class Admin extends User implements Cloneable{
                 case 2:
                     List<Course> courses = platform.getCourses();
                     if(courses.isEmpty()){
-                        System.out.println("Error: No courses found.");
+                        System.out.println("No courses found.");
                         break;
                     }
                     System.out.println("Currently there's " + platform.getCourses().size() + " courses in the system: ");
@@ -108,6 +110,13 @@ public class Admin extends User implements Cloneable{
                         System.out.println(course + " Difficulty: " + course.getCourseLevel());
                     }
                     break;
+                case 7:
+                    Catalogue<User> catalogue = new Catalogue<>();
+                    catalogue.addItem(platform.getUsers().get(0));
+                    catalogue.addItem(platform.getUsers().get(1));
+                    catalogue.printAll();
+                    break;
+
                 default:
                     break;
             }
@@ -124,7 +133,7 @@ public class Admin extends User implements Cloneable{
         System.out.println("------ User Creator ------ \nUser Roles: \n1. Student \n2.Instructor \n3.Admin");
         SystemHelper.Choice choice = new SystemHelper.Choice("Choose a role for the user (Enter 0 to go back): ");
 
-        int option = choice.ChoiceByInt(3, false);
+        int option = choice.ChoiceByInt(3);
         switch (option){
             case 0:
                 break;

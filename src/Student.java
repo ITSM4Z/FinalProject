@@ -17,62 +17,11 @@ public class Student extends User implements Cloneable, Comparable<Student>{
         ratedCourses = new HashMap<>();
     }
 
-    public void setEnrolledCourses(ArrayList<Course> courses){
-        enrolledCourses.addAll(courses);
-    }
-
-    public void addCourseEnrollment(Course course){
-        enrolledCourses.add(course);
-        grades.put(course, 0.0);
-    }
-    public boolean removeCourseEnrollment(Course course) {
-        boolean coursesRemoved = enrolledCourses.remove(course);
-        boolean gradesRemoved = grades.remove(course) != null;
-        return coursesRemoved || gradesRemoved;
-    }
-
-    public ArrayList<Course> getEnrolledCourses(){ return enrolledCourses; }
-
-    public boolean modifyGrade(Course course, Double grade){
-        double finalGrade;
-        Double gradeObj = grades.get(course);
-        if(gradeObj == null){
-            grades.put(course, Double.valueOf(0.0));
-            finalGrade = 0;
-        }
-        else{
-            finalGrade = gradeObj;
-        }
-
-        finalGrade += grade;
-        if(finalGrade < 0){
-            System.out.println("Error: The student's grade must not be negative.");
-            return false;
-        }
-        else if(finalGrade > 100){
-            System.out.println("Error: The student's grade must not exceed 100.");
-            return false;
-        }
-        else{
-            grades.put(course, finalGrade);
-            return true;
-        }
-    }
-    public double getGrade(Course course){ return grades.get(course); }
-
-    public double calculateGPA(){
-        if(grades.isEmpty()) return 0.0;
-        double totalGrades = 0.0;
-        for(Double grade : grades.values()){
-            totalGrades += grade;
-        }
-        return totalGrades / grades.size();
-    }
-
     @Override
     public String toString() {
         return String.format("Student: %s", super.toString());
     }
+
     @Override
     public Student clone() throws CloneNotSupportedException {
         Student cloned = (Student) super.clone();
@@ -110,7 +59,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
 
             SystemHelper.Choice choice = new SystemHelper.Choice("Choose an option (Press 0 to go back): ");
 
-            int option = choice.ChoiceByInt(4, false);
+            int option = choice.ChoiceByInt(4);
 
             switch (option){
                 case 0: return;
@@ -131,6 +80,59 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                     break;
             }
         }
+    }
+
+    public void setEnrolledCourses(ArrayList<Course> courses){
+        enrolledCourses.addAll(courses);
+    }
+
+    public void addCourseEnrollment(Course course){
+        enrolledCourses.add(course);
+        grades.put(course, 0.0);
+    }
+    public boolean removeCourseEnrollment(Course course) {
+        boolean coursesRemoved = enrolledCourses.remove(course);
+        boolean gradesRemoved = grades.remove(course) != null;
+        return coursesRemoved || gradesRemoved;
+    }
+
+    public List<Course> getEnrolledCourses(){ return Collections.unmodifiableList(enrolledCourses); }
+
+    public double getGrade(Course course){ return grades.get(course); }
+
+    public boolean modifyGrade(Course course, Double grade){
+        double finalGrade;
+        Double gradeObj = grades.get(course);
+        if(gradeObj == null){
+            grades.put(course, Double.valueOf(0.0));
+            finalGrade = 0;
+        }
+        else{
+            finalGrade = gradeObj;
+        }
+
+        finalGrade += grade;
+        if(finalGrade < 0){
+            System.out.println("Error: The student's grade must not be negative.");
+            return false;
+        }
+        else if(finalGrade > 100){
+            System.out.println("Error: The student's grade must not exceed 100.");
+            return false;
+        }
+        else{
+            grades.put(course, finalGrade);
+            return true;
+        }
+    }
+
+    public double calculateGPA(){
+        if(grades.isEmpty()) return 0.0;
+        double totalGrades = 0.0;
+        for(Double grade : grades.values()){
+            totalGrades += grade;
+        }
+        return totalGrades / grades.size();
     }
 
     private void viewGrades(){
@@ -160,7 +162,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                 System.out.println((i + 1) + ". " + enrolledCourses.get(i));
             }
 
-            int option = choice.ChoiceByInt(enrolledCourses.size(), false);
+            int option = choice.ChoiceByInt(enrolledCourses.size());
             if (option == 0) {
                 break;
             }
@@ -180,7 +182,6 @@ public class Student extends User implements Cloneable, Comparable<Student>{
         }
     }
 
-
     private void enrollInNewCourse(Platform platform){
         List<Course> availableCourses = platform.getCoursesSortedByDifficulty();
 
@@ -193,9 +194,10 @@ public class Student extends User implements Cloneable, Comparable<Student>{
 
         while (true){
             for(int i = 0; i < availableCourses.size(); i++){
-                System.out.println((i+1) + ". " + availableCourses.get(i).getTitle());
+                System.out.println((i+1) + ". " + availableCourses.get(i).courseInfo());
+                System.out.println("------------------------------");
             }
-            int option = choice.ChoiceByInt(availableCourses.size(), false);
+            int option = choice.ChoiceByInt(availableCourses.size());
 
             if(option == 0){
                 break;
@@ -207,7 +209,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                 boolean enrolled = selectedCourse.enroll(this);
                 if(enrolled){
                     addCourseEnrollment(selectedCourse);
-                    System.out.println("Successfully enrolled in: " + selectedCourse.getTitle());
+                    System.out.println("Successfully enrolled in: " + selectedCourse);
                 }
                 break;
             } catch (AlreadyEnrolledException | CourseFullException e){
@@ -235,7 +237,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                 System.out.println((i+1) + ". " + enrolledCourses.get(i));
             }
 
-            int option = choice.ChoiceByInt(enrolledCourses.size(), false);
+            int option = choice.ChoiceByInt(enrolledCourses.size());
             if(option == 0) break;
 
             Course course = enrolledCourses.get(option - 1);
@@ -245,7 +247,7 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                 System.out.println("Viewing: " + course);
                 System.out.println("1. View Grades \n2. Rate the course");
                 choice = new SystemHelper.Choice("Choose an option (Enter 0 to go back): ");
-                option = choice.ChoiceByInt(2, false);
+                option = choice.ChoiceByInt(2);
                 if(option == 0){
                     break;
                 }
@@ -259,25 +261,23 @@ public class Student extends User implements Cloneable, Comparable<Student>{
                         System.out.println("Grade for " + course.getTitle() + ": " + grade);
                     }
                     System.out.printf("Your current GPA: %.2f\n", calculateGPA());
-                    break;
                 }
                 else if(option == 2){
                     if(ratedCourses.get(course) != null){
                         double rating = ratedCourses.get(course);
                         System.out.println("You already gave this course a rating(" + rating + ").");
-                        break;
+                        continue;
                     }
                     System.out.print("Enter rating (1-5): ");
                     double ratingInput = sc.nextDouble();
 
                     if(ratingInput < 1 || ratingInput > 5){
                         System.out.println("Error: Rating must be 1-5.");
-                        break;
+                        continue;
                     }
                     course.addRating(ratingInput);
                     ratedCourses.put(course, ratingInput);
                     System.out.printf("Rated %.1f | New course average rating: %.1f \n", ratingInput, course.getAverageRating());
-                    break;
                 }
             }
         }

@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class SystemHelper {
     public static class Choice{
-        //CRITICAL: INDEX OUT OF BOUNDS EXCEPTION WHEN CHOOSING A WRONG OPTION
         String prompt;
         String emptyError;
         String negativeError;
@@ -35,7 +34,7 @@ public class SystemHelper {
             this.boundsError = "Error: You must enter a valid choice number.";
         }
 
-        public int ChoiceByInt(int bounds, boolean skipException){
+        public int ChoiceByInt(int bounds){
             Scanner sc = new Scanner(System.in);
             int choice;
 
@@ -62,7 +61,6 @@ public class SystemHelper {
                     }
                     break;
                 } catch (NumberFormatException e){
-                    if(skipException) return -1;
                     System.out.println("Error: You must enter a number.");
                     sc.nextLine();
                 }
@@ -96,7 +94,7 @@ public class SystemHelper {
             this.negativeError = "Error: You must enter a positive number.";
         }
 
-        public User searchForUser(List<User> passedUserList, Choice choice, UserRole userRole) throws UserNotFoundException{
+        public User searchForUser(List<User> passedUserList, UserRole userRole) throws UserNotFoundException{
             ArrayList<User> users = new ArrayList<>(passedUserList);
 
             if(users.isEmpty()) return null;
@@ -125,7 +123,7 @@ public class SystemHelper {
                 System.out.print(prompt);
 
                 try {
-                    userInput = sc.nextLine().trim();
+                    userInput = sc.nextLine().toLowerCase().trim();
 
                     if(userInput.isEmpty()){
                         System.out.println(emptyError);
@@ -145,13 +143,104 @@ public class SystemHelper {
                             return user;
                         }
                     }
-                    throw new UserNotFoundException("The " + role + " with the name/id of: " + userInput + " was not found.");
+                    throw new UserNotFoundException("The " + role + " with the id of: " + userInput + " was not found.");
                 } catch (NumberFormatException numberE){
                     while (true){
                         ArrayList<User> nameResults = new ArrayList<>();
-                        userInput = userInput.toLowerCase();
                         for(User user : users){
-                            if(user.getName().toLowerCase().trim().contains(userInput)){
+                            if(user.getName().toLowerCase().trim().startsWith(userInput)){
+                                nameResults.add(user);
+                            }
+                        }
+
+                        System.out.println("Search results for 10 " + role + "s: ");
+                        int resultsCount = 0;
+                        for (int i = 0; i < 10; i++) {
+                            try{
+                                System.out.println((i+1) + ". " + nameResults.get(i));
+                                resultsCount++;
+                                if(nameResults.get(i) == nameResults.getLast())
+                                    break;
+                            } catch (IndexOutOfBoundsException indexE){
+                                System.out.println("CRITICAL: An unexpected error occurred while looping through the " +
+                                        "name results.");
+                                break;
+                            }
+                        }
+                        if(nameResults.isEmpty()){
+                            System.out.println("No " + role + "s was found.");
+                        }
+
+                        int choice;
+                        while (true){
+                            System.out.print("Choose a user or enter another user's name to search again" +
+                                    " (Enter 0 to go back): ");
+                            try {
+                                userInput = sc.nextLine().toLowerCase().trim();
+                                if(userInput.isEmpty()){
+                                    System.out.println("Error: You must choose a user.");
+                                    continue;
+                                }
+                                choice = Integer.parseInt(userInput);
+                                if(choice == 0){
+                                    return null;
+                                }
+                                else if(choice < 0){
+                                    System.out.println("Error: You must enter a positive number.");
+                                    continue;
+                                }
+                                else if(choice > resultsCount){
+                                    System.out.println("Error: You must enter a valid user choice.");
+                                    continue;
+                                }
+                                return nameResults.get(choice - 1);
+                            } catch (NumberFormatException e){
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        public User searchForUser(List<User> passedUserList) throws UserNotFoundException{
+            ArrayList<User> users = new ArrayList<>(passedUserList);
+            if(users.isEmpty()) return null;
+
+            String role = "user";
+            Scanner sc = new Scanner(System.in);
+
+            String userInput = "";
+            while (true){
+                System.out.println(users.size() + " " + role + "s.");
+                System.out.print(prompt);
+
+                try {
+                    userInput = sc.nextLine().toLowerCase().trim();
+
+                    if(userInput.isEmpty()){
+                        System.out.println(emptyError);
+                        continue;
+                    }
+                    int id = Integer.parseInt(userInput);
+                    if(id == 0){
+                        break;
+                    }
+                    else if(id < 0){
+                        System.out.println(negativeError);
+                    }
+
+                    for(User user : users){
+                        if(user.getUserId() == id){
+                            return user;
+                        }
+                    }
+                    throw new UserNotFoundException("The " + role + " with the id of: " + userInput + " was not found.");
+                } catch (NumberFormatException numberE){
+                    while (true){
+                        ArrayList<User> nameResults = new ArrayList<>();
+                        for(User user : users){
+                            if(user.getName().toLowerCase().trim().startsWith(userInput)){
                                 nameResults.add(user);
                             }
                         }
@@ -168,85 +257,38 @@ public class SystemHelper {
                                 break;
                             }
                         }
-                        System.out.println(resultsCount);
 
-                        int option = choice.ChoiceByInt(10, true);
-                        if(option == 0){
-                            return null;
-                        }
-                        else if(option == -1){
-                            continue;
-                        }
-                        return nameResults.get(option - 1);
-                    }
-                }
-            }
-            return null;
-        }
-        public User searchForUser(List<User> passedUserList, Choice choice) throws UserNotFoundException{
-            ArrayList<User> users = new ArrayList<>(passedUserList);
-
-            if(users.isEmpty()) return null;
-
-            String role = "user";
-
-            Scanner sc = new Scanner(System.in);
-            String userInput = "";
-
-            while (true){
-                System.out.println(users.size() + " " + role + "s.");
-                System.out.print(prompt);
-
-                try {
-                    userInput = sc.nextLine().trim();
-
-                    if(userInput.isEmpty()){
-                        System.out.println(emptyError);
-                        continue;
-                    }
-                    int id = Integer.parseInt(userInput);
-                    if(id == 0){
-                        break;
-                    }
-                    else if(id < 0){
-                        System.out.println(negativeError);
-                    }
-
-                    for(User user : users){
-                        if(user.getUserId() == id){
-                            return user;
-                        }
-                    }
-                    throw new UserNotFoundException("The " + role + " with the name/id of: " + userInput + " was not found.");
-                } catch (NumberFormatException numberE){
-                    while (true){
-                        ArrayList<User> nameResults = new ArrayList<>();
-                        userInput = userInput.toLowerCase();
-                        for(User user : users){
-                            if(user.getName().toLowerCase().trim().contains(userInput)){
-                                nameResults.add(user);
-                            }
+                        if(nameResults.isEmpty()){
+                            System.out.println("No " + role + "s was found.");
                         }
 
-                        System.out.println("Search results: ");
-                        int resultsCount = 0;
-                        for (int i = 0; i < 10; i++) {
-                            try{
-                                System.out.println((i+1) + ". " + nameResults.get(i));
-                                resultsCount++;
-                            } catch (IndexOutOfBoundsException indexE){
+                        int choice;
+                        while (true){
+                            System.out.print("Choose a user or enter another user's name to search again" +
+                                    " (Enter 0 to go back): ");
+                            try {
+                                userInput = sc.nextLine().toLowerCase().trim();
+                                if(userInput.isEmpty()){
+                                    System.out.println("Error: You must choose a user.");
+                                    continue;
+                                }
+                                choice = Integer.parseInt(userInput);
+                                if(choice == 0){
+                                    return null;
+                                }
+                                else if(choice < 0){
+                                    System.out.println("Error: You must enter a positive number.");
+                                    continue;
+                                }
+                                else if(choice > resultsCount){
+                                    System.out.println("Error: You must enter a valid user choice.");
+                                    continue;
+                                }
+                                return nameResults.get(choice - 1);
+                            } catch (NumberFormatException e){
                                 break;
                             }
                         }
-
-                        int option = choice.ChoiceByInt(resultsCount, true);
-                        if(option == 0){
-                            return null;
-                        }
-                        else if(option == -1){
-                            continue;
-                        }
-                        return nameResults.get(option - 1);
                     }
                 }
             }

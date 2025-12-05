@@ -91,7 +91,7 @@ public class Course implements Enrollable, Rateable, Cloneable, Comparable<Cours
     }
 
     public String courseInfo(){ //new
-        return String.format("%s \nID:%d \n%d Students \nProviding %d Modules \nRatings: %.1f \nPrice: %.2f",
+        return String.format("%s (%d) \n%d Students \nProviding %d Modules \nRatings: %.1f \nPrice: %.2f",
                 title, courseID, enrolledStudents.size(), modules.size(), averageRating, price);
     }
 

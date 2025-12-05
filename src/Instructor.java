@@ -13,14 +13,11 @@ public class Instructor extends User implements Cloneable{
         teachingCourses = new ArrayList<>();
     }
 
-    public void addTeachingCourse(Course course){
-        teachingCourses.add(course);
-    }
-
     @Override
     public String toString() {
         return String.format("Instructor: %s", super.toString());
     }
+
     @Override
     public Instructor clone() throws CloneNotSupportedException {
         Instructor cloned = (Instructor) super.clone();
@@ -51,10 +48,10 @@ public class Instructor extends User implements Cloneable{
         while (true){
             System.out.println();
             System.out.println("------ Instructor Dashboard ------");
-            System.out.println("1. View Teaching Courses \n2. Create New Course");
+            System.out.println("1. View Teaching Courses \n2. Create New Course \n3. Remove a Course");
 
             choice = new SystemHelper.Choice("Choose an option (Enter 0 to go back): ");
-            option = choice.ChoiceByInt(4, false);
+            option = choice.ChoiceByInt(3);
 
             switch (option){
                 case 0: return;
@@ -64,9 +61,177 @@ public class Instructor extends User implements Cloneable{
                 case 2:
                     createCourse(platform);
                     break;
+                case 3:
+                    removeCourse(platform);
+                    break;
                 default:
                     System.out.println("Error: You must enter a valid choice number.");
                     break;
+            }
+        }
+    }
+
+    public void addTeachingCourse(Course course){
+        teachingCourses.add(course);
+    }
+
+    public Student showEnrolledStudents(Course course){
+        List<Student> studentList = course.getEnrolledStudents();
+        if(studentList.isEmpty()){
+            System.out.println("There are no students enrolled in this course.");
+            return null;
+        }
+        else{
+            for (int i = 0; i < studentList.size(); i++) {
+                System.out.println((i+1) + ". " + studentList.get(i));
+            }
+            SystemHelper.Choice choice = new SystemHelper.Choice("Choose a student to manage (Press 0 to exit): ",
+                    "Error: You must choose a student.",
+                    "Error: You must enter a positive number.",
+                    "Error: You must enter a valid student choice.");
+
+            int option = choice.ChoiceByInt(studentList.size());
+
+            if(option == 0) return null;
+
+            return studentList.get(option - 1);
+        }
+    }
+
+    public Student findEnrolledStudent(Course course) throws UserNotFoundException {
+        try {
+            SystemHelper.Search searcher = new SystemHelper.Search("Enter a student's Name or Id (Enter 0 to go back): ",
+                    "Error: You must enter a student's Name or Id.",
+                    "Error: You must enter a valid positive Id.");
+
+            List<User> users = new ArrayList<>(course.getEnrolledStudents());
+            Student student = (Student) searcher.searchForUser(users, UserRole.STUDENT);
+            if(student == null){
+                System.out.println("There are no students enrolled in the course.");
+                return null;
+            }
+            return student;
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException();
+        }
+    }
+
+    public void removeCourse(Platform platform){
+        if(teachingCourses.isEmpty()){
+            System.out.println("There are no courses for you to remove.");
+            return;
+        }
+
+        for (int i = 0; i < teachingCourses.size(); i++) {
+            System.out.println((i+1) + ". " + teachingCourses.get(i));
+        }
+
+        SystemHelper.Choice choice = new SystemHelper.Choice("Choose a course to remove (Press 0 to exit): ",
+                "Error: You must choose a course.",
+                "Error: You must enter a positive number.",
+                "Error: You must enter a valid course choice.");
+
+        int option = choice.ChoiceByInt(teachingCourses.size());
+
+        if(option == 0) return;
+
+        Course course = teachingCourses.get(option - 1);
+        if(platform.removeCourse(course)){
+            for(Student student : course.getEnrolledStudents()){
+                if(!student.removeCourseEnrollment(course)){
+                    System.out.println("CRITICAL: An unexpected error occurred while removing enrolled students from: " +
+                            course);
+                    break;
+                }
+            }
+            teachingCourses.remove(course);
+            System.out.println("Removed (" + course + ") Successfully.");
+        }
+        else{
+            System.out.println("Error: An unexpected error occurred while trying to remove a course.");
+        }
+    }
+
+    public void showTeachingCourses(){
+        if(teachingCourses.isEmpty()){
+            System.out.println("You are not teaching any course.");
+            return;
+        }
+
+        for (int i = 0; i < teachingCourses.size(); i++) {
+            System.out.println((i+1) + ". " + teachingCourses.get(i));
+        }
+
+        SystemHelper.Choice choice = new SystemHelper.Choice("Choose a course to manage (Press 0 to exit): ",
+                "Error: You must choose a course.",
+                "Error: You must enter a positive number.",
+                "Error: You must enter a valid course choice.");
+
+        int option = choice.ChoiceByInt(teachingCourses.size());
+
+        if(option == 0) return;
+
+        Course course = teachingCourses.get(option - 1);
+
+        System.out.println("Managing (" + course+ ")");
+        System.out.println("1. View Enrolled Students \n2. Search For Enrolled Student");
+        option = choice.ChoiceByInt(2);
+
+        Student student = null;
+
+        if(option == 0) return;
+        else if(option == 1){
+            student = showEnrolledStudents(course);
+        }
+        else if(option == 2){
+            try {
+                student = findEnrolledStudent(course);
+            } catch (UserNotFoundException e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        if(student == null) return;
+
+        System.out.println("Managing (" + student.getName() + ")");
+        System.out.println("1. Assign grade");
+
+        choice = new SystemHelper.Choice("Choose an option (Press 0 to exit): ");
+
+        option = choice.ChoiceByInt(1);
+
+        if(option == 0) return;
+        else if(option == 1){
+            gradeStudent(course, student);
+        }
+    }
+
+    public void gradeStudent(Course course, Student student){
+        Scanner sc = new Scanner(System.in);
+        String userInput = "";
+        while (true){
+            System.out.print("Enter a positive grade to increase or a negative to decrease (Enter 0 to go back): ");
+            userInput = sc.nextLine().trim();
+
+            try {
+                if(userInput.isEmpty()){
+                    System.out.println("Error: You must enter a grade.");
+                    continue;
+                }
+
+                double grade = Double.parseDouble(userInput);
+
+                if(grade == 0){
+                    break;
+                }
+
+                boolean success = student.modifyGrade(course, Double.valueOf(grade));
+
+                if(success){
+                    break;
+                }
+            } catch (NumberFormatException e){
+                System.out.println("Error: You must enter a number.");
             }
         }
     }
@@ -83,7 +248,7 @@ public class Instructor extends User implements Cloneable{
         System.out.println("------ Course Creator ------ \nCourse Levels: \n1. Beginner \n2. Intermediate \n3. Advanced");
         SystemHelper.Choice choice = new SystemHelper.Choice("Choose a level for the course (Enter 0 to go back): ");
 
-        int option = choice.ChoiceByInt(3, false);
+        int option = choice.ChoiceByInt(3);
         switch (option){
             case 0:
                 break;
@@ -208,139 +373,8 @@ public class Instructor extends User implements Cloneable{
             }
         }
 
-        //If you can, add the ability to confirm creation.
         Course createdCourse = new Course(courseId, courseCapacity, courseTitle, coursePrice, courseLevel);
         platform.addCourse(createdCourse);
         addTeachingCourse(createdCourse);
-    }
-
-    public Student showEnrolledStudents(Course course){
-        List<Student> studentList = course.getEnrolledStudents();
-        if(studentList.isEmpty()){
-            System.out.println("There are no students enrolled in this course.");
-            return null;
-        }
-        else{
-            for (int i = 0; i < studentList.size(); i++) {
-                System.out.println((i+1) + ". " + studentList.get(i));
-            }
-            SystemHelper.Choice choice = new SystemHelper.Choice("Choose a student to manage (Press 0 to exit): ",
-                    "Error: You must choose a student.",
-                    "Error: You must enter a positive number.",
-                    "Error: You must enter a valid student choice.");
-
-            int option = choice.ChoiceByInt(studentList.size(), false);
-
-            if(option == 0) return null;
-
-            return studentList.get(option - 1);
-        }
-    }
-
-    public Student findEnrolledStudent(Course course) throws UserNotFoundException {
-        try {
-            SystemHelper.Search searcher = new SystemHelper.Search("Enter a student's Name or Id (Enter 0 to go back): ",
-                    "Error: You must enter a student's Name or Id.",
-                    "Error: You must enter a valid positive Id.");
-            SystemHelper.Choice choice = new SystemHelper.Choice("Choose a student or enter another student's name to search again" +
-                    " (Enter 0 to go back): ",
-                    "Error: You must choose a student.",
-                    "Error: You must enter a positive number.",
-                    "Error: You must enter a valid student choice.");
-
-            List<User> users = new ArrayList<>(course.getEnrolledStudents());
-            Student student = (Student) searcher.searchForUser(users, choice, UserRole.STUDENT);
-            if(student == null){
-                System.out.println("There are no students enrolled in the course.");
-                return null;
-            }
-            return student;
-        } catch (UserNotFoundException e) {
-            throw new UserNotFoundException();
-        }
-    }
-
-    public void showTeachingCourses(){
-        if(teachingCourses.isEmpty()){
-            System.out.println("You are not teaching any course.");
-            return;
-        }
-
-        for (int i = 0; i < teachingCourses.size(); i++) {
-            System.out.println((i+1) + ". " + teachingCourses.get(i));
-        }
-
-        SystemHelper.Choice choice = new SystemHelper.Choice("Choose a course to manage (Press 0 to exit): ",
-                "Error: You must choose a course.",
-                "Error: You must enter a positive number.",
-                "Error: You must enter a valid course choice.");
-
-        int option = choice.ChoiceByInt(teachingCourses.size(), false);
-
-        if(option == 0) return;
-
-        Course course = teachingCourses.get(option - 1);
-
-        System.out.println("Managing (" + course+ ")");
-        System.out.println("1. View Enrolled Students \n2. Search For Enrolled Student");
-        option = choice.ChoiceByInt(2, false);
-
-        Student student = null;
-
-        if(option == 0) return;
-        else if(option == 1){
-            student = showEnrolledStudents(course);
-        }
-        else if(option == 2){
-            try {
-                student = findEnrolledStudent(course);
-            } catch (UserNotFoundException e){
-                System.out.println(e.getMessage());
-            }
-        }
-
-        if(student == null) return;
-
-        System.out.println("Managing (" + student.getName() + ")");
-        System.out.println("1. Assign grade");
-
-        choice = new SystemHelper.Choice("Choose an option (Press 0 to exit): ");
-
-        option = choice.ChoiceByInt(1, false);
-
-        if(option == 0) return;
-        else if(option == 1){
-            gradeStudent(course, student);
-        }
-    }
-
-    public void gradeStudent(Course course, Student student){
-        Scanner sc = new Scanner(System.in);
-        String userInput = "";
-        while (true){
-            System.out.print("Enter a positive grade to increase or a negative to decrease (Enter 0 to go back): ");
-            userInput = sc.nextLine().trim();
-
-            try {
-                if(userInput.isEmpty()){
-                    System.out.println("Error: You must enter a grade.");
-                    continue;
-                }
-
-                double grade = Double.parseDouble(userInput);
-
-                if(grade == 0){
-                    break;
-                }
-
-                boolean success = student.modifyGrade(course, Double.valueOf(grade));
-
-                if(success){
-                    break;
-                }
-            } catch (NumberFormatException e){
-                System.out.println("Error: You must enter a number.");
-            }
-        }
     }
 }

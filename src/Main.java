@@ -8,9 +8,6 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        //Fix the search algorithm
-        //Add a welcome message
-
         User currentUser;
         Platform platform = new Platform();
         List<User> userList = platform.getUsers();
@@ -19,7 +16,8 @@ public class Main {
             System.out.println("------ Welcome to the E-Learning Platform Program! ------");
             System.out.println("1. Login as Admin \n2. Login as Instructor \n3. Login as Student");
             SystemHelper.Choice choice = new SystemHelper.Choice("Choose an option (Enter 0 to exit the program): ");
-            int option = choice.ChoiceByInt(3, false);
+            int option = choice.ChoiceByInt(3);
+            System.out.println();
             int userCounter = 0;
 
             choice = new SystemHelper.Choice("Choose an option (Enter 0 to go back): ");
@@ -36,7 +34,7 @@ public class Main {
                             admins.add((Admin) user);
                         }
                     }
-                    option = choice.ChoiceByInt(admins.size(), false);
+                    option = choice.ChoiceByInt(admins.size());
                     if(option == 0) continue;
 
                     currentUser = admins.get(option-1);
@@ -56,7 +54,7 @@ public class Main {
                             instructors.add((Instructor) user);
                         }
                     }
-                    option = choice.ChoiceByInt(instructors.size(), false);
+                    option = choice.ChoiceByInt(instructors.size());
                     if(option == 0) continue;
 
                     currentUser = instructors.get(option-1);
@@ -76,7 +74,7 @@ public class Main {
                             students.add((Student) user);
                         }
                     }
-                    option = choice.ChoiceByInt(students.size(), false);
+                    option = choice.ChoiceByInt(students.size());
                     if(option == 0) continue;
 
                     currentUser = students.get(option-1);

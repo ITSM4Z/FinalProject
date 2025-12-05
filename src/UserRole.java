@@ -14,4 +14,3 @@ public enum UserRole {
      ADMIN
     // how to use example: UserRole role = UserRole.STUDENT;
 }
-

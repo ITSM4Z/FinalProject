@@ -13,8 +13,4 @@ these are the difficulty levels of the courses,
      INTERMEDIATE,
      ADVANCED
      // How to use example: CourseLevel level = CourseLevel.BEGINNER;
-    
-    
 }
-
-   
