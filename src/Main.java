@@ -1,19 +1,30 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
+ * The entry point for the E-Learning Platform application.
+ * This class initializes the system and handles the login workflow.
+ * It demonstrates:
+ * Main application loop.
+ * Polymorphism (treating different user roles).
+ * Use of {@code try-catch-finally} blocks for session management.
  *
  * @author Mazen
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Main {
+    /**
+     * The main method that launches the application.
+     * It presents a login menu for Admins, Instructors, and Students.
+     * Based on the selection, it launches the appropriate dashboard.
+     */
     public static void main(String[] args) {
         User currentUser;
         Platform platform = new Platform();
         List<User> userList = platform.getUsers();
 
         while (true){
-            System.out.println("------ Welcome to the E-Learning Platform Program! ------");
+            System.out.println("\n------ Welcome to the E-Learning Platform Program! ------");
             System.out.println("1. Login as Admin \n2. Login as Instructor \n3. Login as Student");
             SystemHelper.Choice choice = new SystemHelper.Choice("Choose an option (Enter 0 to exit the program): ");
             int option = choice.ChoiceByInt(3);
@@ -44,6 +55,9 @@ public class Main {
                     } catch (UserNotFoundException e){
                         System.out.println(e.getMessage());
                     }
+                    finally {
+                        System.out.println("\n------------ See you later " + currentUser.getName() + " ------------");
+                    }
                     break;
                 case 2:
                     List<Instructor> instructors = new ArrayList<>();
@@ -64,6 +78,9 @@ public class Main {
                     } catch (UserNotFoundException e){
                         System.out.println(e.getMessage());
                     }
+                    finally {
+                        System.out.println("\n------------ See you later " + currentUser.getName() + " ------------");
+                    }
                     break;
                 case 3:
                     List<Student> students = new ArrayList<>();
@@ -83,6 +100,9 @@ public class Main {
                         currentUser.displayDashboard(platform);
                     } catch (UserNotFoundException e){
                         System.out.println(e.getMessage());
+                    }
+                    finally {
+                        System.out.println("\n------------ See you later " + currentUser.getName() + " ------------");
                     }
                     break;
                 default:

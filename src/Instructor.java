@@ -1,23 +1,51 @@
+import java.util.*;
+
 /**
+ * Represents an Instructor user in the E-Learning Platform.
+ * Instructors are responsible for creating and managing courses.
+ * Their capabilities include:
+ * Creating new courses and assigning them difficulty levels.
+ * Removing courses they teach.
+ * Viewing and searching for students enrolled in their courses.
+ * Grading students.
  *
  * @author Mazen
  */
 
-import java.util.*;
 
 public class Instructor extends User implements Cloneable{
+    /** A list of courses this instructor is currently teaching. */
     private ArrayList<Course> teachingCourses;
 
+    /**
+     * Constructs a new Instructor with the specified details.
+     *
+     * @param userId   The unique identifier.
+     * @param name     The instructor's full name.
+     * @param email    The instructor's email address.
+     * @param userRole The role.
+     */
     public Instructor(int userId, String name, String email, UserRole userRole) {
         super(userId, name, email, userRole);
         teachingCourses = new ArrayList<>();
     }
 
+    /**
+     * Returns a string representation of the instructor.
+     * @return Formatted string starting with "Instructor:".
+     */
     @Override
     public String toString() {
         return String.format("Instructor: %s", super.toString());
     }
 
+    /**
+     * Creates a deep copy of the Instructor object.
+     * Ensures that the list of teaching courses is duplicated so changes to the clone do not affect the original.
+     *
+     * @return A new independent Instructor object.
+     * @throws CloneNotSupportedException if cloning is not supported.
+     */
     @Override
     public Instructor clone() throws CloneNotSupportedException {
         Instructor cloned = (Instructor) super.clone();
@@ -25,6 +53,15 @@ public class Instructor extends User implements Cloneable{
         return cloned;
     }
 
+    /**
+     * Checks if this Instructor object is equal to another object.
+     * Equality is determined by the unique {@code userId}.
+     * Two Instructor objects are considered the same if they share the same ID,
+     * regardless of their other attributes as they might be the same.
+     *
+     * @param obj The object to compare with.
+     * @return true if the Instructor objects are the same or have the same {@param userId} false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if(obj == null || !(obj instanceof Instructor)) return false;
@@ -34,11 +71,25 @@ public class Instructor extends User implements Cloneable{
         return this.userId == instructor.userId;
     }
 
+    /**
+     * Returns a hash code value for the instructor.
+     * This method is overridden so that instructors that are equal based on {@link #equals} have the same hash code
+     * which is required for correct behavior in hash based collections (like {@link HashMap}).
+     * The hash code is generated based on the unique {@code userId}.
+     *
+     * @return An integer hash code value.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(userId);
     }
 
+    /**
+     * Displays the Instructor Dashboard menu.
+     * Allows the instructor to view their courses or create new ones or remove existing ones.
+     *
+     * @param platform The central platform instance (used for course management).
+     */
     @Override
     public void displayDashboard(Platform platform) {
         SystemHelper.Choice choice;
@@ -71,10 +122,21 @@ public class Instructor extends User implements Cloneable{
         }
     }
 
+    /**
+     * Assigns a course to this instructor.
+     *
+     * @param course The course object to be added to the teaching list.
+     */
     public void addTeachingCourse(Course course){
         teachingCourses.add(course);
     }
 
+    /**
+     * Displays a list of students enrolled in a specific course and allows selection.
+     *
+     * @param course The course to inspect.
+     * @return The selected Student object, or null if no selection is made.
+     */
     public Student showEnrolledStudents(Course course){
         List<Student> studentList = course.getEnrolledStudents();
         if(studentList.isEmpty()){
@@ -98,6 +160,13 @@ public class Instructor extends User implements Cloneable{
         }
     }
 
+    /**
+     * Searches for a specific student within a course's enrollment list.
+     *
+     * @param course The course to search within.
+     * @return The found Student object.
+     * @throws UserNotFoundException if the student is not found.
+     */
     public Student findEnrolledStudent(Course course) throws UserNotFoundException {
         try {
             SystemHelper.Search searcher = new SystemHelper.Search("Enter a student's Name or Id (Enter 0 to go back): ",
@@ -116,6 +185,12 @@ public class Instructor extends User implements Cloneable{
         }
     }
 
+    /**
+     * Handles the logic for removing a course taught by this instructor.
+     * Ensures that if a course is removed, all enrolled students are unenrolled from it as well.
+     *
+     * @param platform The platform instance where the course is saved.
+     */
     public void removeCourse(Platform platform){
         if(teachingCourses.isEmpty()){
             System.out.println("There are no courses for you to remove.");
@@ -152,6 +227,10 @@ public class Instructor extends User implements Cloneable{
         }
     }
 
+    /**
+     * Displays all courses taught by the instructor and provides management options.
+     * Options include viewing enrolled students or searching for a specific student.
+     */
     public void showTeachingCourses(){
         if(teachingCourses.isEmpty()){
             System.out.println("You are not teaching any course.");
@@ -206,6 +285,14 @@ public class Instructor extends User implements Cloneable{
         }
     }
 
+    /**
+     * Assigns or modifies a grade for a student in a specific course.
+     * This method takes user input to determine the grade value and updates
+     * the student's record using {@link Student#modifyGrade(Course, Double)}.
+     *
+     * @param course  The course context.
+     * @param student The student to be graded.
+     */
     public void gradeStudent(Course course, Student student){
         Scanner sc = new Scanner(System.in);
         String userInput = "";

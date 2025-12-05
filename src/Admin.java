@@ -1,28 +1,64 @@
+import java.util.*;
+
 /**
+ * Represents an Administrator in the E-Learning Platform.
+ * Admins have the highest level of access in the system. Their responsibilities include:
+ * Managing the global list of users (adding/removing Students and Instructors).
+ * Viewing sorted reports (Courses by difficulty, Students by GPA).
+ * Accessing the full course catalogue.
  *
  * @author Mazen
  */
 
-import java.util.*;
-
 public class Admin extends User implements Cloneable{
-    private Platform platform;
+    /** A reference to the central platform instance to perform system operations. */
+    private final Platform platform;
 
+    /**
+     * Constructs a new Admin user.
+     *
+     * @param userId   The unique identifier.
+     * @param name     The admin's name.
+     * @param email    The admin's email address.
+     * @param userRole The role.
+     * @param platform The reference to the main Platform instance.
+     */
     public Admin(int userId, String name, String email, UserRole userRole, Platform platform) {
         super(userId, name, email, userRole);
         this.platform = platform;
     }
 
+    /**
+     * Returns a string representation of the admin.
+     * @return Formatted string starting with "Admin:".
+     */
     @Override
     public String toString() {
         return String.format("Admin: %s", super.toString());
     }
 
+    /**
+     * Creates a shallow copy of the Admin object.
+     * Note: The {@code platform} reference is shared between the original and the clone
+     * because the Platform is supposed to be single entity.
+     *
+     * @return A new Admin object.
+     * @throws CloneNotSupportedException if cloning is not supported.
+     */
     @Override
     public Admin clone() throws CloneNotSupportedException {
         return (Admin) super.clone();
     }
 
+    /**
+     * Checks if this Admin object is equal to another object.
+     * Equality is determined by the unique {@code userId}.
+     * Two Admin objects are considered the same if they share the same ID,
+     * regardless of their other attributes as they might be the same.
+     *
+     * @param obj The object to compare with.
+     * @return true if the Admin objects are the same or have the same {@param userId} false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if(obj == null || !(obj instanceof Admin)) return false;
@@ -32,11 +68,30 @@ public class Admin extends User implements Cloneable{
         return this.userId == admin.userId;
     }
 
+    /**
+     * Returns a hash code value for the admin.
+     * This method is overridden so that admins that are equal based on {@link #equals} have the same hash code
+     * which is required for correct behavior in hash based collections (like {@link HashMap}).
+     * The hash code is generated based on the unique {@code userId}.
+     *
+     * @return An integer hash code value.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(userId);
     }
 
+    /**
+     * Displays the Admin Dashboard menu.
+     * Provides options to:
+     * View all users and courses.
+     * Add or remove users.
+     * View students sorted by GPA (demonstrating {@code TreeSet}).
+     * View courses sorted by difficulty.
+     * Demo the generic {@code Catalogue} class.
+     *
+     * @param platform The central platform instance.
+     */
     @Override
     public void displayDashboard(Platform platform) {
         SystemHelper.Choice choice;
@@ -98,14 +153,14 @@ public class Admin extends User implements Cloneable{
                     break;
                 case 5:
                     System.out.println("Students sorted by GPA:");
-                    List<Student> sortedUsers = platform.getStudentsSortedByGPA();
+                    TreeSet<Student> sortedUsers = platform.getStudentsSortedByGPA();
                     for(Student student : sortedUsers){
                         System.out.println(student + " GPA: " + student.calculateGPA());
                     }
                     break;
                 case 6:
                     System.out.println("Courses sorted by difficulty:");
-                    List<Course> sortedCourses = platform.getCoursesSortedByDifficulty();
+                    TreeSet<Course> sortedCourses = platform.getCoursesSortedByDifficulty();
                     for(Course course : sortedCourses){
                         System.out.println(course + " Difficulty: " + course.getCourseLevel());
                     }
@@ -122,6 +177,12 @@ public class Admin extends User implements Cloneable{
             }
         }
     }
+
+    /**
+     * An internal helper method to handle the creation of a new user.
+     * Collects name, ID, and email from the admin, validates inputs, and
+     * adds the new user to the Platform.
+     */
     private void createUser(){
         int userId = 9999;
         String userName = "";

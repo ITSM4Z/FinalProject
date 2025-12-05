@@ -2,6 +2,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * A utility class providing helpful tools for console interaction.
+ * This class encapsulates logic for user input validation, menu selection,
+ * and search operations. It uses static inner classes to group related functionalities.
+ *
+ * @author Mazen
+ */
+
+
 public class SystemHelper {
     public static class Choice{
         String prompt;
@@ -9,12 +18,21 @@ public class SystemHelper {
         String negativeError;
         String boundsError;
 
+        /**
+         * Constructs a Choice helper with custom error messages.
+         *
+         * @param prompt        The message displayed to the user.
+         * @param emptyError    Message displayed if input is empty.
+         * @param negativeError Message displayed if input is negative.
+         * @param boundsError   Message displayed if input is out of range.
+         */
         public Choice(String prompt, String emptyError, String negativeError, String boundsError){
             this.prompt = prompt;
             this.emptyError = emptyError;
             this.negativeError = negativeError;
             this.boundsError = boundsError;
         }
+        //I used overloading here so the tool can be as much customizable as possible.
         public Choice(String prompt, String emptyError, String negativeError){
             this.prompt = prompt;
             this.emptyError = emptyError;
@@ -34,6 +52,13 @@ public class SystemHelper {
             this.boundsError = "Error: You must enter a valid choice number.";
         }
 
+        /**
+         * Prompts the user for an integer input within a specified range (0 to bounds).
+         * Loops until valid input is received.
+         *
+         * @param bounds The maximum valid integer choice.
+         * @return The validated integer choice.
+         */
         public int ChoiceByInt(int bounds){
             Scanner sc = new Scanner(System.in);
             int choice;
@@ -62,12 +87,16 @@ public class SystemHelper {
                     break;
                 } catch (NumberFormatException e){
                     System.out.println("Error: You must enter a number.");
-                    sc.nextLine();
                 }
             }
             return choice;
         }
     }
+
+    /**
+     * An inner class designed to handle searching for users within a list.
+     * Supports searching by exact ID or by name matching.
+     */
     public static class Search{
         String prompt;
         String emptyError;
@@ -94,6 +123,14 @@ public class SystemHelper {
             this.negativeError = "Error: You must enter a positive number.";
         }
 
+        /**
+         * Searches for a user within a list, filtering by a specific UserRole.
+         *
+         * @param passedUserList The list of users to search through.
+         * @param userRole       The specific role to filter by (like searching only for Instructors).
+         * @return The found User object, or null if cancelled.
+         * @throws UserNotFoundException if no user matches the criteria.
+         */
         public User searchForUser(List<User> passedUserList, UserRole userRole) throws UserNotFoundException{
             ArrayList<User> users = new ArrayList<>(passedUserList);
 
@@ -203,6 +240,14 @@ public class SystemHelper {
             }
             return null;
         }
+
+        /**
+         * Searches for a user within a list without role filtering.
+         *
+         * @param passedUserList The list of users to search through.
+         * @return The found User object.
+         * @throws UserNotFoundException if no user is found.
+         */
         public User searchForUser(List<User> passedUserList) throws UserNotFoundException{
             ArrayList<User> users = new ArrayList<>(passedUserList);
             if(users.isEmpty()) return null;

@@ -1,12 +1,9 @@
 /**
- *
- * @author Rayan
- */
-
-/**
  * The role of the user in the platform system.
  *  also Enums, Fixed values and prevents typing errors.
  * usage is to assign roles to users in the platform.
+ *
+ * @author Rayan
  */
 public enum UserRole {
      STUDENT,
