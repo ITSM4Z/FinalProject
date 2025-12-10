@@ -1,9 +1,16 @@
+package com.educore.model;
+
+import com.educore.interfaces.Enrollable;
+import com.educore.interfaces.Rateable;
+import com.educore.enums.CourseLevel;
+import com.educore.exception.AlreadyEnrolledException;
+import com.educore.exception.CourseFullException;
+import com.educore.exception.UserNotFoundException;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 
 /**
  * Course class represents a specific course in the E-Learning Platform.
@@ -11,8 +18,6 @@ import java.util.Objects;
  * enrolled students, modules, and performance ratings. It implements the
  * {@link Enrollable} interface to handle student registration logic and
  * {@link Rateable} to track course quality.
- *
- * @author Meshal
  */
 
 public class Course implements Enrollable, Rateable, Cloneable, Comparable<Course>{

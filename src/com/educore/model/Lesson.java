@@ -1,9 +1,10 @@
+package com.educore.model;
+
 /**
  * This class serves as a data model for course content.
  * Represents a single lesson entity containing a title and duration.
- *
- * @author Meshal
  */
+
 public class Lesson {
     private String title;
     private int durationMinutes;

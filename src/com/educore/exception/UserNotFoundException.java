@@ -1,10 +1,11 @@
+package com.educore.exception;
+
 /**
  * A custom checked Exception to use when something is not found.
  * extending Exception to use it with try-catch.
  * usage is when searching for a user that doesn't exist.
- *
- * @author Rayan
  */
+
 public class UserNotFoundException extends Exception {
     // default message
     public UserNotFoundException(){

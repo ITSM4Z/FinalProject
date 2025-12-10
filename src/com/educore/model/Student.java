@@ -1,3 +1,11 @@
+package com.educore.model;
+
+import com.educore.enums.UserRole;
+import com.educore.service.Platform;
+import com.educore.util.SystemHelper;
+import com.educore.exception.AlreadyEnrolledException;
+import com.educore.exception.CourseFullException;
+import com.educore.exception.UserNotFoundException;
 import java.util.*;
 
 /**
@@ -8,8 +16,6 @@ import java.util.*;
  * Rating courses.
  * Calculating GPA.
  * It implements {@link Comparable} to allow sorting students by their GPA.
- *
- * @author Mazen
  */
 
 public class Student extends User implements Cloneable, Comparable<Student>{

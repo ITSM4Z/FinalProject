@@ -1,9 +1,10 @@
+package com.educore.interfaces;
+
 /**
  * An interface representing any entity that can receive ratings from users.
  * Examples: Course, Instructor, System Feature, etc.
- *
- * @author Osama
  */
+
 public interface Rateable {
     /**
      * Adds a new rating to this entity.

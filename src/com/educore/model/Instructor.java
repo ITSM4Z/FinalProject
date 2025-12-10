@@ -1,3 +1,11 @@
+package com.educore.model;
+
+import com.educore.enums.UserRole;
+import com.educore.enums.CourseLevel;
+import com.educore.service.Platform;
+import com.educore.util.SystemHelper;
+import com.educore.exception.UserNotFoundException;
+
 import java.util.*;
 
 /**
@@ -8,10 +16,7 @@ import java.util.*;
  * Removing courses they teach.
  * Viewing and searching for students enrolled in their courses.
  * Grading students.
- *
- * @author Mazen
  */
-
 
 public class Instructor extends User implements Cloneable{
     /** A list of courses this instructor is currently teaching. */

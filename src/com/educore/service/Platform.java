@@ -1,3 +1,11 @@
+package com.educore.service;
+
+import com.educore.model.*;
+import com.educore.enums.UserRole;
+import com.educore.enums.CourseLevel;
+import com.educore.util.SystemHelper;
+import com.educore.exception.UserNotFoundException;
+
 import java.util.*;
 
 /**
@@ -8,8 +16,6 @@ import java.util.*;
  * Uses {@link Vector} for thread safe user management.
  * Uses {@link TreeSet} to provide sorted view of students by GPA and courses by difficulty.
  * Provides search functionality and data retrieval for the dashboard.
- *
- * @author Mazen
  */
 
 public class Platform {

@@ -1,5 +1,10 @@
-import java.util.ArrayList;
-import java.util.List;
+package com.educore.main;
+
+import com.educore.model.*;
+import com.educore.service.Platform;
+import com.educore.util.SystemHelper;
+import com.educore.exception.UserNotFoundException;
+import java.util.*;
 
 /**
  * The entry point for the E-Learning Platform application.
@@ -8,8 +13,6 @@ import java.util.List;
  * Main application loop.
  * Polymorphism (treating different user roles).
  * Use of {@code try-catch-finally} blocks for session management.
- *
- * @author Mazen
  */
 
 public class Main {

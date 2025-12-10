@@ -1,6 +1,6 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+package com.educore.util;
+
+import java.util.*;
 
 /**
  * A generic container class used to manage a collection of items.
@@ -9,8 +9,6 @@ import java.util.List;
  * Usage example: {@code Catalogue<User>} or {@code Catalogue<Course>}.
  *
  * @param <T> The type of objects stored in this catalogue.
- *
- * @author Mazen
  */
 
 public class Catalogue<T> {

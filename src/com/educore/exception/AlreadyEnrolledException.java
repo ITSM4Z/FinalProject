@@ -1,10 +1,11 @@
+package com.educore.exception;
+
 /**
  * a custom checked Exception to use when the course is full.
  * Extending Exception to use the try-catch.
  * usage is when someone tries to enroll but the course is full.
- *
- * @author Rayan
  */
+
 public class AlreadyEnrolledException extends Exception {
     //default message
     public AlreadyEnrolledException(){

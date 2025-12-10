@@ -1,3 +1,11 @@
+package com.educore.model;
+
+import com.educore.enums.UserRole;
+import com.educore.service.Platform;
+import com.educore.util.SystemHelper;
+import com.educore.util.Catalogue;
+import com.educore.exception.UserNotFoundException;
+
 import java.util.*;
 
 /**
@@ -6,8 +14,6 @@ import java.util.*;
  * Managing the global list of users (adding/removing Students and Instructors).
  * Viewing sorted reports (Courses by difficulty, Students by GPA).
  * Accessing the full course catalogue.
- *
- * @author Mazen
  */
 
 public class Admin extends User implements Cloneable{
@@ -298,13 +304,13 @@ public class Admin extends User implements Cloneable{
 
         User user = null;
         switch (userRole){
-            case STUDENT:
+            case UserRole.STUDENT:
                 user = new Student(userId, userName, email, userRole);
                 break;
-            case INSTRUCTOR:
+            case UserRole.INSTRUCTOR:
                 user = new Instructor(userId, userName, email, userRole);
                 break;
-            case ADMIN:
+            case UserRole.ADMIN:
                 user = new Admin(userId, userName, email, userRole, this.platform);
                 break;
             case null, default:

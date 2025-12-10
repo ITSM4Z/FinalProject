@@ -1,13 +1,15 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+package com.educore.util;
+
+import com.educore.model.User;
+import com.educore.enums.UserRole;
+import com.educore.exception.UserNotFoundException;
+
+import java.util.*;
 
 /**
  * A utility class providing helpful tools for console interaction.
  * This class encapsulates logic for user input validation, menu selection,
  * and search operations. It uses static inner classes to group related functionalities.
- *
- * @author Mazen
  */
 
 

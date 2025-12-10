@@ -1,9 +1,15 @@
+package com.educore.interfaces;
+
+import com.educore.model.Student;
+import com.educore.exception.AlreadyEnrolledException;
+import com.educore.exception.CourseFullException;
+import com.educore.exception.UserNotFoundException;
+
 /**
  * An interface that represents any entity that a student can enroll in or drop from.
  * Examples: Course, Activity, Program, etc.
- *
- * @author Osama
  */
+
 public interface Enrollable {
     /**
      * Attempts to enroll a student in this entity.

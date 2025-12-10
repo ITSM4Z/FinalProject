@@ -1,9 +1,14 @@
+package com.educore.model;
+
+import com.educore.enums.UserRole;
+import com.educore.service.Platform;
+import com.educore.exception.UserNotFoundException;
+
 /**
  * An abstract class representing a generic user of the system.
  * Different user types such as Student, Instructor, or Admin will extend this class.
- *
- * @author Osama
  */
+
 public abstract class User {
     /** A unique identifier for each user in the system. */
     protected int userId;
